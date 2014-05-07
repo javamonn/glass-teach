@@ -42,6 +42,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   hInstUser = LoadLibrary(TEXT("user32.dll"));
   blockInput = (BlockInput) GetProcAddress(hInstUser, "BlockInput");
   
+  //create thread to read shared file and post messages to this thread
+  
   HWND window = disable(&wc, &mi);
   Sleep(500);
   enable(window);
@@ -88,7 +90,7 @@ HWND disable(WNDCLASSW *wc, MONITORINFO *mi) {
 				mi->rcMonitor.bottom - mi->rcMonitor.top,
 				0, 0, hInstGlobal, 0);
   printf("begin message loop\n");
-  while( GetMessage(&msg, window, 0, 0)) {
+  while(GetMessage(&msg, window, 0, 0)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
@@ -108,6 +110,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
 {
   switch(msg)  
   {
+	  //can this create a window on demand? WndProc is registered with WNDCLASSW, independent of the window 
       case WM_CREATE:
       {
           CenterWindow(hwnd);
@@ -123,7 +126,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
       case WM_SETCURSOR:
       {
           SetCursor(NULL);
-	  return 0;
+	      return 0;
       }
   }
 
