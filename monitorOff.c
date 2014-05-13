@@ -52,14 +52,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   //block all input (CTRL ALT DEL will still exit from this)
   (blockInput) (TRUE);
   //create full screen black window, hide cursor
-  window = CreateWindowW(wc.lpszClassName, L"Center",
+  window = CreateWindowW(wc.lpszClassName, L"Glass-teach",
 				WS_POPUP | WS_VISIBLE,
 				mi.rcMonitor.left,
 				mi.rcMonitor.top,
 				mi.rcMonitor.right - mi.rcMonitor.left,
 				mi.rcMonitor.bottom - mi.rcMonitor.top,
 				0, 0, hInstGlobal, 0);
-  printf("begin message loop\n");
   /* Message loop, window waits until recieving a command to renable window
    *
    */

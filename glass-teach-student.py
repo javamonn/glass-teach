@@ -28,6 +28,17 @@ def glass_teach_student():
 					else:
 						# turn off monitor, ie start process
 						monitor_proc.terminate()
+				curr_state_map[state] = value
+		# TODO: check if monitor is actually off if we read the state as off, this prevents people
+		# from ctrl-alt-deleting and exiting the window. This will break debug.
 		time.sleep(.5)
+
+# confirms functionality of monitor on/off
+def monitorTest():
+	monitor_proc = Popen(['glass-teach.exe'])
+	time.sleep(1)
+	monitor_proc.terminate()
+		
 if __name__ == '__main__':
     glass_teach_student()
+	#monitorTest()
