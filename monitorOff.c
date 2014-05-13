@@ -1,7 +1,8 @@
 #include <windows.h>
 #include <stdio.h>
 
-//gcc monitorOff.c -lgdi32
+//From C:\MinGW\bin dir:
+//gcc.exe C:\Users\ramir292035\Documents\GitHub\glass-teach\monitorOff.c -lgdi32 -o C:\Users\ramir292035\Documents\GitHub\glass-teach\glass-teach
 
 /**
  * THIS IS THE CLIENT TO BE RUN ON STUDENT COMPUTERS
@@ -25,9 +26,7 @@ HINSTANCE hInstUser;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     LPSTR lpCmdLine, int nCmdShow)
 {
-  //
   HMONITOR hmon;
-  MONITORINFO mi;
   HANDLE windowManagerHandle;
   
   //wndclass instantiation
@@ -42,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   //info needed for fullscreen window
   hInstGlobal = hInstance;
   hmon = MonitorFromWindow(GetDesktopWindow(), MONITOR_DEFAULTTONEAREST);
-  mi = { sizeof(mi) };
+  MONITORINFO mi = { sizeof(mi) };
   if (!GetMonitorInfo(hmon, &mi)) return -1;
   
   //load the block input function
@@ -53,12 +52,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   //block all input (CTRL ALT DEL will still exit from this)
   (blockInput) (TRUE);
   //create full screen black window, hide cursor
-  window = CreateWindowW(wc->lpszClassName, L"Center",
+  window = CreateWindowW(wc.lpszClassName, L"Center",
 				WS_POPUP | WS_VISIBLE,
-				mi->rcMonitor.left,
-				mi->rcMonitor.top,
-				mi->rcMonitor.right - mi->rcMonitor.left,
-				mi->rcMonitor.bottom - mi->rcMonitor.top,
+				mi.rcMonitor.left,
+				mi.rcMonitor.top,
+				mi.rcMonitor.right - mi.rcMonitor.left,
+				mi.rcMonitor.bottom - mi.rcMonitor.top,
 				0, 0, hInstGlobal, 0);
   printf("begin message loop\n");
   /* Message loop, window waits until recieving a command to renable window
@@ -78,7 +77,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg,
 	  //can this create a window on demand? WndProc is registered with WNDCLASSW, independent of the window 
       case WM_CREATE:
       {
-          CenterWindow(hwnd);
+          //CenterWindow(hwnd);
           return 0;
       }
 
