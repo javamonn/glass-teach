@@ -11,7 +11,7 @@ def glass_teach_student():
 	while True:
 		# read shared file, structured as 'name'='value'
 		# currently supported pairs: monitor={true, false}
-		ipc_file = open('glass-teach-config.txt', 'r')
+		ipc_file = open('T:\Get Assignments\Tech_Apps\Cadle, Aaron\UIL\glass-teach-config.txt', 'r')
 		# current state of this machine
 		for line in ipc_file:
 			name, value = line.split('=')
@@ -21,14 +21,14 @@ def glass_teach_student():
 			# whether we need to change the current state of this machine
 			if curr_state_map[name] != value:
 				# monitor on/off
-				if name == 'monitor':
-					if value:
-						# turn on monitor, ie end process
-						monitor_proc = Popen(['glass-teach.exe'])
-					else:
+				if name == 'monitorOn':
+					if value == 'true':
 						# turn off monitor, ie start process
 						monitor_proc.terminate()
-				curr_state_map[state] = value
+					else:
+						# turn on monitor, ie end process
+						monitor_proc = Popen(['glass-teach.exe'])
+				curr_state_map[name] = value
 		# TODO: check if monitor is actually off if we read the state as off, this prevents people
 		# from ctrl-alt-deleting and exiting the window. This will break debug.
 		time.sleep(.5)
