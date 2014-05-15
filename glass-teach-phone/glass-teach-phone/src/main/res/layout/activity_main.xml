@@ -5,6 +5,32 @@
     android:orientation="vertical"
     tools:context="${packageName}.${activityClass}">
 
+    <TextView
+        android:id="@+id/connect_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attempting to connect to computer..."
+        android:textSize="30sp"
+        android:layout_margin="20dp"/>
+
+    <ProgressBar
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:indeterminate="true"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/help_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make sure the phone is connected by USB and the computer is turned on."
+        android:textSize="25sp"
+        android:layout_margin="20dp"
+        android:visibility="gone"/>
+
     <Button
         android:id="@+id/monitor"
         android:tag="on"
@@ -17,6 +43,6 @@
         android:paddingBottom="17dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 </LinearLayout>
