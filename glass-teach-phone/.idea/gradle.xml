@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="C:\Users\Generic\AndroidStudioProjects\glass-teach-phone" />
-            <option value="C:\Users\Generic\AndroidStudioProjects\glass-teach-phone\glass-teach-phone" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/glass-teach-phone" />
           </set>
         </option>
       </GradleProjectSettings>

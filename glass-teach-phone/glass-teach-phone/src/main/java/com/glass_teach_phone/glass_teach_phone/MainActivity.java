@@ -11,8 +11,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -22,7 +24,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     TextView connectText;
 
     ServerSocket serverSocket;
-    Socket clientSocket;
+    Socket socket;
+
+    //to computer
+    PrintWriter outStream;
+    //from computer
+    Scanner inStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 serverSocket = new ServerSocket(38300);
                 serverSocket.setSoTimeout(0);
                 // attempt to connect, infinite time out
-                clientSocket = serverSocket.accept();
+                socket = serverSocket.accept();
+                // get streams
+                outStream = new PrintWriter(socket.getOutputStream(), true);
+                inStream = new Scanner(socket.getInputStream());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -77,8 +88,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             connectText.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
             monitorButton.setVisibility(View.VISIBLE);
-
             //set connection flag so main UI knows we're ready
+
+            //send message to computer so it knows we're connected
+
+
         }
     }
 }
