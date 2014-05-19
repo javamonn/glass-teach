@@ -31,6 +31,7 @@ def glass_teach_student():
 				curr_state_map[name] = value
 		# TODO: check if monitor is actually off if we read the state as off, this prevents people
 		# from ctrl-alt-deleting and exiting the window. This will break debug.
+		print(curr_state_map)
 		time.sleep(.5)
 
 # confirms functionality of monitor on/off
