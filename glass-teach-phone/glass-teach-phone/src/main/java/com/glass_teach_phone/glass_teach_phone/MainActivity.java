@@ -1,8 +1,11 @@
 package com.glass_teach_phone.glass_teach_phone;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +34,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //from computer
     Scanner inStream;
 
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //attempt to connect
 
         Connect task = new Connect();
+        task.execute();
     }
 
     @Override
@@ -53,10 +58,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.monitor:
                 if (view.getTag().equals("on")) {
                     //send turn off command to computer
+                    Log.d("DEBUG", "monitor off sent");
                     view.setTag("off");
+                    outStream.println("monitor off");
+                    monitorButton.setText("Turn On Monitor");
                 } else {
                     //send turn on command to host computer
+                    Log.d("DEBUG", "monitor on sent");
                     view.setTag("on");
+                    outStream.println("monitor on");
+                    monitorButton.setText("Turn off Monitor");
                 }
         }
     }
@@ -70,7 +81,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 serverSocket = new ServerSocket(38300);
                 serverSocket.setSoTimeout(0);
                 // attempt to connect, infinite time out
+                Log.d("CONNECT", "Accepting connections");
                 socket = serverSocket.accept();
+                Log.d("CONECT", "Connection accepted");
                 // get streams
                 outStream = new PrintWriter(socket.getOutputStream(), true);
                 inStream = new Scanner(socket.getInputStream());
