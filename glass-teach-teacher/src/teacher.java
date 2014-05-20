@@ -8,6 +8,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
 
+//download org.apache.commons.io jar
+import org.apache.commons.io.FileDeleteStrategy;
+
 public class teacher {
 
 		public static String SHARED_FILE_PATH = "T:/Get Assignments/Tech_Apps/Cadle, Aaron/UIL/glass-teach-config.txt";
@@ -49,7 +52,7 @@ public class teacher {
 		        		writer.write("\n");
 		        		writer.flush();
 		        		writer.close();
-		        		Files.delete(sharedFile.toPath());
+		        		FileDeleteStrategy.FORCE.delete(sharedFile);
 		        		tempFile.renameTo(sharedFile);
 
 		        	}
