@@ -48,7 +48,6 @@ def glass_teach_server():
                         glass_socket = s
                     unclassified_sockets.remove(s)
             elif s == glass_socket:
-                print('recv from glass')
                 op = s.recv(128)
                 # we can just echo certain commands to student sockets and let them handle it
                 if 'monitor' in op:
