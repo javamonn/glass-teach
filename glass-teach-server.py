@@ -10,6 +10,7 @@ import select
 def glass_teach_server():
     unclassified_sockets = []
     student_sockets = []
+    connected_sockets = []
     glass_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     teacher_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -17,18 +18,19 @@ def glass_teach_server():
     server_socket.setblocking(0)
     server_socket.bind((socket.gethostname(), 8080))
     server_socket.listen(30)
+    connected_sockets.append(server_socket)
     while 1:
         # See if glass has sent instructions or if new socket is trying to bind. Note that we don't care
         # about writing to anything unless Glass has passed along instructions.
-        readable, writable, exceptional = select.select([glass_socket, server_socket] + unclassified_sockets, [], [])
-        len(readable)
+        readable, writable, exceptional = select.select(connected_sockets, [], [])
         for s in readable:
-            if s is server_socket:
+            if s == server_socket:
                 new_socket, address = s.accept()
                 new_socket.setblocking(0)
                 print('new connection from: ' + str(address))
                 unclassified_sockets.append(new_socket)
-            if s in unclassified_sockets:
+                connected_sockets.append(new_socket)
+            elif s in unclassified_sockets:
                 # get classification message, assign accordingly
                 socket_type = s.recv(10)
                 print('recv from unclassified socket: ' + str(s))
@@ -42,7 +44,8 @@ def glass_teach_server():
                     elif socket_type == 'glass':
                         glass_socket = s
                 unclassified_sockets.remove(s)
-            if s is glass_socket:
+            elif s == glass_socket:
+                print('recv from glass')
                 op = s.recv(128)
                 # we can just echo certain commands to student sockets and let them handle it
                 if 'monitor' in op:
