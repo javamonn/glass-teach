@@ -1,45 +1,10 @@
-# C:\Python27\python.exe glass-teach-student.py
-
-from subprocess import Popen
-import time 
+import socket
 
 def glass_teach_student():
-	curr_state_map = {}
-	# process that turns off the monitor
-	monitor_proc = ''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # assume VPS is up and running at this point
+    s.connect('54.187.236.208', 8080)
+    print('connected')
 
-	while True:
-		# read shared file, structured as 'name'='value'
-		# currently supported pairs: monitor={true, false}
-		ipc_file = open('T:\Get Assignments\Tech_Apps\Cadle, Aaron\UIL\glass-teach-config.txt', 'r')
-		# current state of this machine
-		for line in ipc_file:
-			name, value = line.split('=')
-			# assume the first time we read the file it'll be in a starting config
-			if name not in curr_state_map:
-				curr_state_map[name] = value
-			# whether we need to change the current state of this machine
-			if curr_state_map[name] != value:
-				# monitor on/off
-				if name == 'monitorOn':
-					if value == 'true':
-						# turn off monitor, ie start process
-						monitor_proc.terminate()
-					else:
-						# turn on monitor, ie end process
-						monitor_proc = Popen(['glass-teach.exe'])
-				curr_state_map[name] = value
-		# TODO: check if monitor is actually off if we read the state as off, this prevents people
-		# from ctrl-alt-deleting and exiting the window. This will break debug.
-		ipc_file.close()
-		time.sleep(.5)
-
-# confirms functionality of monitor on/off
-def monitorTest():
-	monitor_proc = Popen(['glass-teach.exe'])
-	time.sleep(1)
-	monitor_proc.terminate()
-		
 if __name__ == '__main__':
-    glass_teach_student()
-	#monitorTest()
+    glass_teach_student.py()
