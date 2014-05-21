@@ -38,12 +38,15 @@ def glass_teach_server():
                     socket_type = socket_type[:socket_type.index('~')]
                     print('classification message: ' + str(socket_type))
                     if socket_type == 'teacher':
+                        print('connected teacher')
                         teacher_socket = s
                     elif socket_type == 'student':
+                        print('connected student')
                         student_sockets.append(s)
                     elif socket_type == 'glass':
+                        print('connected glass socket')
                         glass_socket = s
-                unclassified_sockets.remove(s)
+                    unclassified_sockets.remove(s)
             elif s == glass_socket:
                 print('recv from glass')
                 op = s.recv(128)
