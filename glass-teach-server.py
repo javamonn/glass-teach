@@ -5,7 +5,7 @@ import select
 # python scripts running on student and teacher computer will try to connect on boot. after connection, client
 # will send a message of length 10 (padded by '~') denoting what is the clients type, ie ['glass', 'student', 'teacher']
 #
-# messages sent by glass will be monitor=true, monitor=false, file-push='filename' file-pull='filename' file-list
+# messages sent by glass will be monitor=off, monitor=on, file-push='filename' file-pull='filename' file-list
 # length 128, padded by '~'
 def glass_teach_server():
     unclassified_sockets = []
