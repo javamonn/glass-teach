@@ -19,6 +19,7 @@ def glass_teach_server():
         # See if glass has sent instructions or if new socket is trying to bind. Note that we don't care
         # about writing to anything unless Glass has passed along instructions.
         readable, writable, exceptional = select.select([glass_socket, server_socket] + unclassified_sockets, [], [])
+        len(readable)
         for s in readable:
             if s is server_socket:
                 new_socket, address = s.accept()
@@ -28,14 +29,16 @@ def glass_teach_server():
             if s in unclassified_sockets:
                 # get classification message, assign accordingly
                 socket_type = s.recv(10)
-                socket_type = socket_type[:socket_type.index('.')]
-                print('classification message: ' + str(socket_type))
-                if socket_type == 'teacher':
-                    teacher_socket = s
-                elif socket_type == 'student':
-                    student_sockets.append(s)
-                elif socket_type == 'glass':
-                    glass_socket = s
+                print('recv from unclassified socket: ' + str(s))
+                if socket_type:
+                    socket_type = socket_type[:socket_type.index('.')]
+                    print('classification message: ' + str(socket_type))
+                    if socket_type == 'teacher':
+                        teacher_socket = s
+                    elif socket_type == 'student':
+                        student_sockets.append(s)
+                    elif socket_type == 'glass':
+                        glass_socket = s
                 unclassified_sockets.remove(s)
 
 if __name__ == '__main__':
