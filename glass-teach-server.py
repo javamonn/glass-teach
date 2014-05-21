@@ -3,8 +3,10 @@ import select
 
 # ~ some notes about the socket protocol ~
 # python scripts running on student and teacher computer will try to connect on boot. after connection, client
-# will send a message of length 10 (padded by '.') denoting what is the clients type, ie ['glass', 'student', 'teacher']
-
+# will send a message of length 10 (padded by '~') denoting what is the clients type, ie ['glass', 'student', 'teacher']
+#
+# messages sent by glass will be monitor=true, monitor=false, file-push='filename' file-pull='filename' file-list
+# length 128, padded by '~'
 def glass_teach_server():
     unclassified_sockets = []
     student_sockets = []
@@ -31,7 +33,7 @@ def glass_teach_server():
                 socket_type = s.recv(10)
                 print('recv from unclassified socket: ' + str(s))
                 if socket_type:
-                    socket_type = socket_type[:socket_type.index('.')]
+                    socket_type = socket_type[:socket_type.index('~')]
                     print('classification message: ' + str(socket_type))
                     if socket_type == 'teacher':
                         teacher_socket = s
@@ -40,6 +42,13 @@ def glass_teach_server():
                     elif socket_type == 'glass':
                         glass_socket = s
                 unclassified_sockets.remove(s)
+            if s is glass_socket:
+                op = s.recv(128)
+                # we can just echo certain commands to student sockets and let them handle it
+                if 'monitor' in op:
+                    print('sending monitor command')
+                    for s in student_sockets:
+                        s.send(op)
 
 if __name__ == '__main__':
     glass_teach_server()
