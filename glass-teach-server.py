@@ -3,10 +3,19 @@ import select
 
 # ~ some notes about the socket protocol ~
 # python scripts running on student and teacher computer will try to connect on boot. after connection, client
-# will send a message of length 10 (padded by '~') denoting what is the clients type, ie ['glass', 'student', 'teacher']
+# will send a message of length 10 (padded by '\00') denoting what is the clients type, ie ['glass', 'student', 'teacher']
 #
 # messages sent by glass will be monitor=off, monitor=on, file-push='filename' file-pull='filename' file-list
-# length 128, padded by '~'
+# length 128, padded by '\00'
+#
+# Glass can query teacher program for contents of local dir before file push with a 'file-list' command
+#
+# ftp protocol:
+#   (1) Initial op packet from glass: 'file-push=filename' (length 128 padded by \00)
+#   (2) Server forwards this packet to teacher and to students, students prepare to recieve data, teacher prepares to send data
+#   (3) Teacher passes data packets of file of length 2048 until entire file has been transferred, last packet will be padded with \00
+#   (4) Server will just forward all packets not containing '\00' to all currently connected student sockets
+
 def glass_teach_server():
     unclassified_sockets = []
     student_sockets = []
@@ -35,7 +44,7 @@ def glass_teach_server():
                 socket_type = s.recv(10)
                 print('recv from unclassified socket: ' + str(s))
                 if socket_type:
-                    socket_type = socket_type[:socket_type.index('~')]
+                    socket_type = socket_type[:socket_type.index('\00')]
                     print('classification message: ' + str(socket_type))
                     if socket_type == 'teacher':
                         print('connected teacher')
@@ -49,11 +58,20 @@ def glass_teach_server():
                     unclassified_sockets.remove(s)
             elif s == glass_socket:
                 op = s.recv(128)
-                # we can just echo certain commands to student sockets and let them handle it
+                # echo monitor command to students, no other data transfer necessary
                 if 'monitor' in op:
                     print('sending monitor command')
                     for s in student_sockets:
                         s.send(op)
+                # prepare for file push, teacher sends back file data (which we echo to students), students prepare to recv
+                if 'file-push' in op:
+                    print('preparing file-push command')
+                    teacher_socket.send(op)
+                    for s in student_sockets:
+                        s.send(op)
+            # only data from student sockets is file stream 
+            elif s in student_sockets:
+                    
 
 if __name__ == '__main__':
     glass_teach_server()
