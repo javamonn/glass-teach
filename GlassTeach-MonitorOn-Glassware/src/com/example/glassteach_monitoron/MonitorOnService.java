@@ -50,7 +50,7 @@ public class MonitorOnService extends Service {
     			out.println("glass" + nc + nc + nc + nc + nc);
     			String op = "monitor=on";
     			while (op.length() < 128) op = op + nc;
-    			out.println(op);
+    			out.print(op);
     			out.flush();
     			out.close();
     		} catch (UnknownHostException e) {
