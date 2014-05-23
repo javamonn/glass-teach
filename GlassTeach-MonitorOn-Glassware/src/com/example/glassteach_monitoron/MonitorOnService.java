@@ -47,7 +47,7 @@ public class MonitorOnService extends Service {
     			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     			//send glass ident
     			char nc = (char) 0x00;
-    			out.println("glass" + nc + nc + nc + nc + nc);
+    			out.print("glass" + nc + nc + nc + nc + nc);
     			String op = "monitor=on";
     			while (op.length() < 128) op = op + nc;
     			out.print(op);
