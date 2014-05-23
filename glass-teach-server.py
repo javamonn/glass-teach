@@ -2,6 +2,7 @@ import socket
 import select
 
 # ~ some notes about the socket protocol ~
+#
 # python scripts running on student and teacher computer will try to connect on boot. after connection, client
 # will send a message of length 10 (padded by '\00') denoting what is the clients type, ie ['glass', 'student', 'teacher']
 #
@@ -10,11 +11,33 @@ import select
 #
 # Glass can query teacher program for contents of local dir before file push with a 'file-list' command
 #
-# ftp protocol:
-#   (1) Initial op packet from glass: 'file-push=filename' (length 128 padded by \00)
-#   (2) Server forwards this packet to teacher and to students, students prepare to recieve data, teacher prepares to send data
-#   (3) Teacher passes data packets of file of length 2048 until entire file has been transferred, last packet will be padded with \00
-#   (4) Server will just forward all packets not containing '\00' to all currently connected student sockets
+# protocol implementation:
+#   file-dir:
+#       1) Glass sends packet 'file-dir' (length 128, padded by \00)  to server.
+#       2) Server echoes 'file-dir' (length 128, padded by \00) to teacher-socket.
+#       3) Teacher-socket sends back a list of files and folders in the directory.
+#          These packets are of length 1024, the first of which has 'file-dir' (so that the server knows what it is recieving), the last
+#          packet will be padded by \00. Names will be separated by \01 characters, folders denoted with a prepended \02
+#       4) Server is echoing these packets back to Glass as it recieves them
+#
+#   At this point the glass user will pick a file from the displayed list, glass begins file-push or file-pull protocol
+#
+#   file-push:
+#       1) Glass sends packet 'file-push=file-name' to server
+#       2) Server echos packet to teacher-socket and student-sockets
+#       3) Teacher socket starts streaming the file back to the server. These packets are of length 2048, the first of which is prepended
+#          by a 'file-push' so the server knows what it recieving. The server echos each of these packets to student-sockets, up until the
+#          last packet, which is padded by \00
+#       4) Server will send back an ack packet when it sees the null delimmitted packet to the glass so glass can initiate another 'file-push'
+#          if it needs to transfer an entire folder
+#
+#   file-pull:
+#       1) Glass sends packet 'file-pull=file-name' to server
+#       2) Server echos packet to teacher-socket and student-sockets (to prepare for listenting)
+#       3) Student-socket looks for file in local directory that contains file_name (it will also contain their name). These sockets will start
+#          streaming this file back to the server, packets of length 2048, the last of which will be padded by \00. The first packet sent by each
+#          student-socket will contain a 'file-pull=file-name' with the full file name (including student name). Server will build a map of student-socket
+#          to recieved file 
 
 def glass_teach_server():
     unclassified_sockets = []
@@ -69,8 +92,25 @@ def glass_teach_server():
                     teacher_socket.send(op)
                     for s in student_sockets:
                         s.send(op)
-            # only data from student sockets is file stream 
+                # retrieve a list of files/folders in the current directory
+                if 'file-dir' in op:
+                    print('echoing file-dir command')
+                    teacher_socket.send(s)
+            # file dir and file-push read data from teacher socket
+            elif s == teacher_socket:
+                if 'file-dir' in op:
+                    # start echoing data back to glass
+                    while '\00' not in (op = recv(1024)):
+                        glass_socket.send(op)
+                if 'file-push' in op:
+                    file_contents = op;
+                    while '\00' not in (op = recv(512)):
+                        file_contents = file_contents + op    
+                
+                
+            # only data from student sockets is file stream
             elif s in student_sockets:
+                
                     
 
 if __name__ == '__main__':
