@@ -1,4 +1,4 @@
-package com.example.glassteach_monitoroff;
+package com.example.glassteach_monitoron;
 
 import android.app.Service;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import java.net.UnknownHostException;
 /**
  * Service to turn off all monitors connected to VPS
  */
-public class MonitorOffService extends Service {
+public class MonitorOnService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,7 +48,7 @@ public class MonitorOffService extends Service {
     			//send glass ident
     			char nc = (char) 0x00;
     			out.println("glass" + nc + nc + nc + nc + nc);
-    			String op = "monitor=off";
+    			String op = "monitor=on";
     			while (op.length() < 128) op = op + nc;
     			out.println(op);
     			out.flush();
