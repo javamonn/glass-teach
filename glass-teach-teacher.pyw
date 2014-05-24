@@ -26,9 +26,9 @@ def glass_teach_teacher():
             dir_string = ''
             for f in dir_contents:
                 if isfile(f):
-                    dir_string = dir_string + f.name.rfind('/') + '\01'
+                   dir_string = dir_string + f[f.rfind('/'):] + '\01'
                 else:
-                    dir_string = dir_string + '\02' + f.name.rfind('/') + '\01'
+                   dir_string = dir_string + '\02' + f[f.rfind('/'):] + '\01'
             dir_string = dir_string[:dir_string.length -  1]
             print('length of list, pre padding: ' + str(dir_string.length))
             while dir_string.length < 1024:
