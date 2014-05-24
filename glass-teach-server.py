@@ -95,19 +95,22 @@ def glass_teach_server():
                 # retrieve a list of files/folders in the current directory
                 if 'file-dir' in op:
                     print('echoing file-dir command')
-                    teacher_socket.send(s)
+                    print('op length: ' + str(len(op)))
+                    teacher_socket.send(op)
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
-                if 'file-dir' in op:
-                    print('recv file-dir from teacher socket, echoing back to glass')
-                    # start echoing data back to glass, send until we see a '\00'
-                    op = recv(1024)
-                    while True:
-                        glass_socket.send(op)
-                        if '\00' not in op:
-                            op = recv(1024)
-                        else:
-                            break
+                print('begin echoing file-dir back to glass')
+                # start echoing data back to glass, send until we see a '\00'
+                op = s.recv(1024)
+                while True:
+                    glass_socket.send(op)
+                    if '\00' not in op:
+                        op = s.recv(1024)
+                    else:
+                        # since glass socket is java, append a new line to delimit eaiser
+                        glass_socket.send('\r\n')
+                        break
+                print('finished echoing data to glass')
                             
 if __name__ == '__main__':
     glass_teach_server()
