@@ -99,19 +99,15 @@ def glass_teach_server():
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
                 if 'file-dir' in op:
-                    # start echoing data back to glass
-                    while '\00' not in (op = recv(1024)):
+                    print('recv file-dir from teacher socket, echoing back to glass')
+                    # start echoing data back to glass, send until we see a '\00'
+                    op = recv(1024)
+                    while True:
                         glass_socket.send(op)
-                if 'file-push' in op:
-                    file_contents = op;
-                    while '\00' not in (op = recv(512)):
-                        file_contents = file_contents + op    
-                
-                
-            # only data from student sockets is file stream
-            elif s in student_sockets:
-                
-                    
-
+                        if '\00' not in op:
+                            op = recv(1024)
+                        else:
+                            break
+                            
 if __name__ == '__main__':
     glass_teach_server()
