@@ -6,7 +6,7 @@ import socket
 def glass_teach_teacher():
     
     # Location that files will be pulled from/pushed to
-    LOCAL_DIR = open('/file/path')
+    LOCAL_DIR = '/home/daniel/Desktop/testfolder/'
     
     monitor_off_proc = ''
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
