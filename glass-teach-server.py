@@ -33,11 +33,14 @@ import select
 #
 #   file-pull:
 #       1) Glass sends packet 'file-pull=file-name' to server
-#       2) Server echos packet to teacher-socket and student-sockets (to prepare for listenting)
-#       3) Student-socket looks for file in local directory that contains file_name (it will also contain their name). These sockets will start
-#          streaming this file back to the server, packets of length 2048, the last of which will be padded by \00. The first packet sent by each
-#          student-socket will contain a 'file-pull=file-name' with the full file name (including student name). Server will build a map of student-socket
-#          to recieved file 
+#       2) Server sends packet to teacher socket 'file-pull=student-count' so teacher socket knows how many full files to anticipate. Server echos
+#          the 'file-pull=file-name' packet to each of the student sockets. Student sockets will look for a file containing the name they recv, the actual
+#          name of the student file will be different, as it will contain the student's name.
+#       3) Student sockets will initially send back a packet of length 128 containing 'file-pull=acutal-file-name', which the server will echo to the teacher
+#          socket. This is done so the teacher socket knows what the name of the file it is recv is.
+#       4) After the initial 128 len packet, the student will send the file in 2048 byte chunks
+#       5) Server iterates over the student sockets, echoing the complete file for each student socket to the teacher, ie, it echos all 2048 len packets from one
+#          socket before echoing more packets from the next packet.
 
 def glass_teach_server():
     unclassified_sockets = []
@@ -101,6 +104,28 @@ def glass_teach_server():
                             file_data = teacher_socket.recv(2048)
                         else:
                             break
+                elif 'file-pull' in op:
+                    print('preparing file-pull command')
+                    # send to teacher a packet containing the file-pull op and the number of student sockets
+                    teacher_packet = 'file-pull=' + len(student_sockets)
+                    while len(teacher_packet) < 128:
+                        teacher_packet = teacher_packet + '\00'
+                    teacher_socket.send(teacher_packet)
+                    for student in student_sockets:
+                        student.send(op)
+                    # iterate over student sockets, echoing the file streams to the teacher socket as we recieve them 
+                    for student in student_sockets:
+                        # fetch and echo actual name of file before beginning stream
+                        file_title = student.recv(128)
+                        teacher_socket.send(file_title)
+                        file_data = student.recv(2048)
+                        while True:
+                            teacher_socket.send(file_data)
+                            if '\00' not in file_data:
+                                file_data = student.recv(2048)
+                            else:
+                                break
+
                 # retrieve a list of files/folders in the current directory
                 elif 'file-dir' in op:
                     print('echoing file-dir command')
@@ -108,19 +133,13 @@ def glass_teach_server():
                     teacher_socket.send(op)
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
-                # currently this only acounts for file-dir protocol
-                print('begin echoing file-dir back to glass')
-                # start echoing data back to glass, send until we see a '\00'
-                op = s.recv(1024)
-                while True:
+                op = s.recv(2048)
+                if 'file-dir' in op:
+                    print('begin echoing file-dir back to glass')
+                    # start echoing data back to glass, send until we see a '\00'
                     glass_socket.send(op)
-                    if '\00' not in op:
-                        op = s.recv(1024)
-                    else:
-                        # since glass socket is java, append a new line to delimit eaiser
-                        glass_socket.send('\r\n')
-                        break
-                print('finished echoing data to glass')
+                    # glass socket is java, newlines help delimit
+                    glass_socket.send('\r\n')
                             
 if __name__ == '__main__':
     glass_teach_server()

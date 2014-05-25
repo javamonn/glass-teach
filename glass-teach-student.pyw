@@ -1,6 +1,6 @@
 import socket
 from subprocess import Popen
-from os import chdir
+from os import chdir, listdir
 
 
 def glass_teach_student():
@@ -17,6 +17,8 @@ def glass_teach_student():
     while 1:
         op = s.recv(128)
         ops = op[:op.index('\00')].split('=')
+        
+        # turn monitors on and off
         if ops[0] == 'monitor':
             if ops[1] == 'off':
                 print('monitor off')
@@ -24,9 +26,13 @@ def glass_teach_student():
             if ops[1] == 'on':
                 print('monitor on')
                 monitor_off_proc.terminate()
+
+        # recieve a file from the teacher computer (get assignment)
         elif ops[0] == 'file-push':
             f = open(ops[1])
+            # Note that first packet originates from glass length 128, then we start getting packets originating from teacher socket
             file_data = s.recv(2048)
+            file_data = file_data[(file_data.index('=') + 1):]
             while '\00' not in file_data:
                 f.write(file_data)
                 file_data = s.recv(2048)
@@ -34,6 +40,25 @@ def glass_teach_student():
             f.write(file_data)
             f.flush()
             f.close()
+
+        # send a file to the teacher computer (turn in assignment)
+        elif ops[0] == 'file-pull'
+        # find file to send back the name, then stream
+        file_name_return = 'file-pull='
+        file_name = ''
+        for f in listdir(LOCAL_DIR)
+            if ops[1] in f:
+                file_name = f
+                break
+        file_name_return = file_name_return + file_name
+        if len(file_name) == 0:
+            # student hasn't turned anything in, alert teacher
+            file_name_return = file_name_return + 'none'
+        while len(file_name_return) < 128:
+            file_name_return = file_name_return + '\00'
+        s.send(file_name_return)
+        # begin streaming file back
+
 
 if __name__ == '__main__':
     glass_teach_student()
