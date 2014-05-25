@@ -40,16 +40,19 @@ def glass_teach_teacher():
         elif 'file-push' == ops[0]:
             print('recv file-push command')
             f = open(ops[1])
-            # 2038 to account for file-push= length, so server knows what it is recv
-            file_data = 'file-push=' +  f.read(2038)
+            file_data = f.read(2048)
+            print('data read first: ' + file_data)
             while len(file_data) == 2048:
+                print('read iteration')
                 s.send(file_data)
                 file_data = f.read(2048)
             # append null bytes until last packet is the right length
             while len(file_data) < 2048:
                 file_data = file_data + '\00'
+            print('final packet sent: ' + file_data)
+            print('final packet len: ' + str(len(file_data)))
             s.send(file_data)
-            f.close(ops[1])
+            f.close()
 
         # pull files from every student's computer 
         elif 'file-pull' == ops[0]:
