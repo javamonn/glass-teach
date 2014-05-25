@@ -4,7 +4,7 @@ from os import chdir, listdir
 
 
 def glass_teach_student():
-    LOCAL_DIR = 'this/is/the/local/dir'
+    LOCAL_DIR = '/home/daniel/Documents'
     chdir(LOCAL_DIR)
     monitor_off_proc = ''
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -29,10 +29,9 @@ def glass_teach_student():
 
         # recieve a file from the teacher computer (get assignment)
         elif ops[0] == 'file-push':
-            f = open(ops[1])
+            f = open(ops[1], 'w+')
             # Note that first packet originates from glass length 128, then we start getting packets originating from teacher socket
             file_data = s.recv(2048)
-            file_data = file_data[(file_data.index('=') + 1):]
             while '\00' not in file_data:
                 f.write(file_data)
                 file_data = s.recv(2048)
@@ -42,22 +41,22 @@ def glass_teach_student():
             f.close()
 
         # send a file to the teacher computer (turn in assignment)
-        elif ops[0] == 'file-pull'
-        # find file to send back the name, then stream
-        file_name_return = 'file-pull='
-        file_name = ''
-        for f in listdir(LOCAL_DIR)
-            if ops[1] in f:
-                file_name = f
-                break
-        file_name_return = file_name_return + file_name
-        if len(file_name) == 0:
-            # student hasn't turned anything in, alert teacher
-            file_name_return = file_name_return + 'none'
-        while len(file_name_return) < 128:
-            file_name_return = file_name_return + '\00'
-        s.send(file_name_return)
-        # begin streaming file back
+        elif ops[0] == 'file-pull':
+            # find file to send back the name, then stream
+            file_name_return = 'file-pull='
+            file_name = ''
+            for f in listdir(LOCAL_DIR):
+                if ops[1] in f:
+                    file_name = f
+                    break
+            file_name_return = file_name_return + file_name
+            if len(file_name) == 0:
+                # student hasn't turned anything in, alert teacher
+                file_name_return = file_name_return + 'none'
+            while len(file_name_return) < 128:
+                file_name_return = file_name_return + '\00'
+            s.send(file_name_return)
+            # begin streaming file back
 
 
 if __name__ == '__main__':
