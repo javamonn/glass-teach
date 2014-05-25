@@ -86,19 +86,29 @@ def glass_teach_server():
                     print('sending monitor command')
                     for s in student_sockets:
                         s.send(op)
-                # prepare for file push, teacher sends back file data (which we echo to students), students prepare to recv
-                if 'file-push' in op:
+                elif 'file-push' in op:
                     print('preparing file-push command')
+                    # echo packet to teacher (to find and begin transfering file) and students (to begin listening for the file
                     teacher_socket.send(op)
                     for s in student_sockets:
                         s.send(op)
+                    # as we begin to recv the file stream from teacher, echo it to all of the students
+                    file_data = teacher_socket.recv(2048)
+                    while True:
+                        for sock in student_sockets:
+                            sock.send(file_data)
+                        if '\00' not in file_data:
+                            file_data = teacher_socket.recv(2048)
+                        else:
+                            break
                 # retrieve a list of files/folders in the current directory
-                if 'file-dir' in op:
+                elif 'file-dir' in op:
                     print('echoing file-dir command')
                     print('op length: ' + str(len(op)))
                     teacher_socket.send(op)
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
+                # currently this only acounts for file-dir protocol
                 print('begin echoing file-dir back to glass')
                 # start echoing data back to glass, send until we see a '\00'
                 op = s.recv(1024)
