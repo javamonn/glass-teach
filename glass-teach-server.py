@@ -61,7 +61,6 @@ def glass_teach_server():
         for s in readable:
             if s == server_socket:
                 new_socket, address = s.accept()
-                new_socket.setblocking(0)
                 print('new connection from: ' + str(address))
                 unclassified_sockets.append(new_socket)
                 connected_sockets.append(new_socket)
