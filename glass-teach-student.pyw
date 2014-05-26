@@ -56,8 +56,18 @@ def glass_teach_student():
             while len(file_name_return) < 128:
                 file_name_return = file_name_return + '\00'
             s.send(file_name_return)
-            # begin streaming file back
-
+            # begin streaming file back in len 2048 packets
+            if len(file_name) > 0:
+                f = open(file_name)
+                file_data = f.read(2048)
+                while len(file_data) == 2048:
+                    s.send(file_data)
+                    file_data = f.read(2048)
+                # append null bytes until last packet is the right length
+                while len(file_data) < 2048:
+                    file_data = file_data + '\00'
+                s.send(file_data)
+                f.close()
 
 if __name__ == '__main__':
     glass_teach_student()

@@ -61,7 +61,7 @@ def glass_teach_teacher():
                 # fetch the name of this file first
                 file_name = s.recv(128)
                 file_name = file_name[(file_name.index('=') + 1):]
-                f = open(file_name)
+                f = open(file_name, 'w+')
                 # fetch data 
                 file_data = s.recv(2048)
                 while '\00' not in file_data:
