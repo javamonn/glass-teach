@@ -137,6 +137,8 @@ def glass_teach_server():
                     print('begin echoing file-dir back to glass')
                     # start echoing data back to glass, send until we see a '\00'
                     glass_socket.send(op)
+                    # send the number of connected sockets
+                    glass_socket.send('\00' + str(len(student_sockets)))
                     # glass socket is java, newlines help delimit
                     glass_socket.send('\r\n')
                             
