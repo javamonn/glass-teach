@@ -57,10 +57,12 @@ def glass_teach_teacher():
         # pull files from every student's computer 
         elif 'file-pull' == ops[0]:
             student_count = ops[1]
-            for i in range(student_count):
+            print('student count: ' + student_count)
+            for i in range(int(student_count)):
                 # fetch the name of this file first
                 file_name = s.recv(128)
-                file_name = file_name[(file_name.index('=') + 1):]
+                file_name = file_name[(file_name.index('=') + 1):file_name.index('\00')]
+                print('file_name: ' + file_name)
                 f = open(file_name, 'w+')
                 # fetch data 
                 file_data = s.recv(2048)
