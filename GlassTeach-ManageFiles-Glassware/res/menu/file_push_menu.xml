@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/push"
+        android:title="Push File"       
+        android:icon="@drawable/stop_icon" />
+</menu>
