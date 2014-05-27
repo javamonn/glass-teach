@@ -106,7 +106,7 @@ def glass_teach_server():
                 elif 'file-pull' in op:
                     print('preparing file-pull command')
                     # send to teacher a packet containing the file-pull op and the number of student sockets
-                    teacher_packet = 'file-pull=' + len(student_sockets)
+                    teacher_packet = 'file-pull=' + str(len(student_sockets))
                     while len(teacher_packet) < 128:
                         teacher_packet = teacher_packet + '\00'
                     teacher_socket.send(teacher_packet)
