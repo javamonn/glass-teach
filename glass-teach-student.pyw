@@ -45,8 +45,10 @@ def glass_teach_student():
             # find file to send back the name, then stream
             file_name_return = 'file-pull='
             file_name = ''
+            match_file = ops[1][1:]
+            print('trying to match: ' + match_file)
             for f in listdir(LOCAL_DIR):
-                if ops[1] in f:
+                if match_file in f:
                     file_name = f
                     break
             file_name_return = file_name_return + file_name

@@ -136,11 +136,15 @@ def glass_teach_server():
                     file_data = glass_socket.recv(2048)
                     while True:
                         teacher_socket.send(file_data)
-                        if '\00' not in file_data:
-                            file_data = glass_socket.recv(2048)
-                        else:
+                        if ''.join(['\00' for i in range(2048)]) == file_data:
                             break
+<<<<<<< HEAD
                     print('video fully echoed')
+=======
+                        else:
+                            teacher_socket.recv(2048)
+                    print('finishing video-store command')
+>>>>>>> 45bcd39137029fe257dbb2068a05c7e16f4853d5
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
                 op = s.recv(2048)
