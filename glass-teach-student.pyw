@@ -3,10 +3,14 @@ from subprocess import Popen
 from os import chdir, listdir
 
 
+monitor = True
+monitor_off_proc
+
 def glass_teach_student():
+    global monitor
+    global monitor_off_proc
     LOCAL_DIR = '/home/daniel/Documents'
     chdir(LOCAL_DIR)
-    monitor_off_proc = ''
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # assume VPS is up and running at this point
     s.connect(('54.187.236.208', 8080))
@@ -20,12 +24,14 @@ def glass_teach_student():
         
         # turn monitors on and off
         if ops[0] == 'monitor':
-            if ops[1] == 'off':
+            if ops[1] == 'off' and monitor:
                 print('monitor off')
                 monitor_off_proc = Popen(['glass-teach.exe'])
-            if ops[1] == 'on':
+                monitor = False
+            elif ops[1] == 'on':
                 print('monitor on')
                 monitor_off_proc.terminate()
+                monitro = True
 
         # recieve a file from the teacher computer (get assignment)
         elif ops[0] == 'file-push':
