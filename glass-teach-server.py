@@ -140,6 +140,7 @@ def glass_teach_server():
                             file_data = glass_socket.recv(2048)
                         else:
                             break
+                    print('video fully echoed')
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
                 op = s.recv(2048)

@@ -38,7 +38,7 @@ def glass_teach_teacher():
         
         # stream the file specified back in 2048 byte packets
         elif 'file-push' == ops[0]:
-            print('recv file-push command')
+            print('recv file-push command, opening: ' + ops[1])
             f = open(ops[1])
             file_data = f.read(2048)
             print('data read first: ' + file_data)
@@ -76,15 +76,19 @@ def glass_teach_teacher():
         # store a video on the teacher computer 
         elif 'video-store' == ops[0]:
             print('preparing video store command')
-            f = open(ops[0], 'w+')
+            f = open(ops[1], 'w+')
             file_data = s.recv(2048)
-            while '\00' not in file_data:
+            print(file_data)
+            print('\00' in file_data)
+            write_count = 0
+            while ''.join(['\00' for i in range(2048)]) != file_data:
                 f.write(file_data)
                 file_data = s.recv(2048)
+                write_count = write_count + 1
             file_data = file_data[:file_data.index('\00')]
             f.write(file_data)
             f.close()
-            print('finished video store')
+            print('finished video store: ' + str(write_count))
 
 if __name__ == '__main__':
     glass_teach_teacher()
