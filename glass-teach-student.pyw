@@ -8,7 +8,7 @@ monitor_off_proc
 
 def glass_teach_student():
     global monitor
-    global monitor_off_proc
+    global monitor_off_proc = ''
     LOCAL_DIR = '/home/daniel/Documents'
     chdir(LOCAL_DIR)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
