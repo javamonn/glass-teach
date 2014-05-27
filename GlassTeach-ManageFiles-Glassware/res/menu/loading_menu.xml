@@ -1,8 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/stop"
-        android:title="Stop"       
-        android:icon="@drawable/stop_icon" />
+        android:id="@+id/record"
+        android:title="Record Lecture"
+        android:icon="@drawable/monitor_off" />
    	<item 
         android:id="@+id/monitorOff"
         android:title="Turn Off Monitors"
@@ -19,4 +19,8 @@
         android:id="@+id/pullFile"
         android:title="Pull a File"
         android:icon="@drawable/monitor_on"/>
+    <item
+        android:id="@+id/stop"
+        android:title="Stop"       
+        android:icon="@drawable/stop_icon" />
 </menu>

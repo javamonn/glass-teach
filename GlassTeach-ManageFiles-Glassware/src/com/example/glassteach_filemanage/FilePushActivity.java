@@ -46,7 +46,7 @@ public class FilePushActivity extends Activity implements AdapterView.OnItemClic
 			}
 			Card card = new Card(this);
 			card.setText(files[i]);
-			card.setFootnote("Push File to Student Computers");
+			card.setFootnote("Push File to Student Computers...");
 			//TODO: add image based on file type
 			cards.add(card);
 		}
@@ -64,8 +64,12 @@ public class FilePushActivity extends Activity implements AdapterView.OnItemClic
     	Log.d("DEBUG", "Item clicked: " + cards.get(pos).getText());
     	String file = cards.get(pos).getText().toString();
     	new FilePush().execute(file);
+    	setResult(RESULT_OK);
     	finish();
+    	finishActivity(8081);
+    	Log.d("DEBUG", "After finish Activity");
 	}
+    
 		
 	private class ScrollAdapter extends CardScrollAdapter {
 
@@ -121,7 +125,7 @@ public class FilePushActivity extends Activity implements AdapterView.OnItemClic
     			char nc = (char) 0x00;
     			out.print("glass" + nc + nc + nc + nc + nc);
     			//initialize file-push protocol
-    			String op = "file-push=" + file;
+    			String op = "file-push=" + file[0];
     			while (op.length() < 128) op = op + nc;
     			out.print(op);
     			out.flush();
