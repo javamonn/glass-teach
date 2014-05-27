@@ -73,5 +73,18 @@ def glass_teach_teacher():
                 f.write(file_data)
                 f.close()
 
+        # store a video on the teacher computer 
+        elif 'video-store' == ops[0]:
+            print('preparing video store command')
+            f = open(ops[0], 'w+')
+            file_data = s.recv(2048)
+            while '\00' not in file_data:
+                f.write(file_data)
+                file_data = s.recv(2048)
+            file_data = file_data[:file_data.index('\00')]
+            f.write(file_data)
+            f.close()
+            print('finished video store')
+
 if __name__ == '__main__':
     glass_teach_teacher()

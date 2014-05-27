@@ -124,12 +124,22 @@ def glass_teach_server():
                                 file_data = student.recv(2048)
                             else:
                                 break
-
                 # retrieve a list of files/folders in the current directory
                 elif 'file-dir' in op:
                     print('echoing file-dir command')
                     print('op length: ' + str(len(op)))
                     teacher_socket.send(op)
+
+                elif 'video-store' in op:
+                    print('preparing video-store command')
+                    teacher_socket.send(op)
+                    file_data = glass_socket.recv(2048)
+                    while True:
+                        teacher_socket.send(file_data)
+                        if '\00' not in file_data:
+                            file_data = glass_socket.recv(2048)
+                        else:
+                            break
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
                 op = s.recv(2048)
