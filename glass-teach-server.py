@@ -79,7 +79,7 @@ def glass_teach_server():
                     elif socket_type == 'student':
                         print('connected student')
                         student_sockets.append(s)
-                        s.settimeout(.5)
+                        s.settimeout(5)
                     elif socket_type == 'glass':
                         print('connected glass socket')
                         glass_socket = s
