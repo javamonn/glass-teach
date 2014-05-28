@@ -63,6 +63,7 @@ def glass_teach_server():
             if s == server_socket:
                 new_socket, address = s.accept()
                 print('new connection from: ' + str(address))
+                new_socket.settimeout(.5)
                 unclassified_sockets.append(new_socket)
                 connected_sockets.append(new_socket)
             elif s in unclassified_sockets:
@@ -134,13 +135,11 @@ def glass_teach_server():
                 elif 'video-store' in op:
                     print('preparing video-store command')
                     teacher_socket.send(op)
-                    file_data = glass_socket.recv(2048)
-                    while True:
-                        teacher_socket.send(file_data)
-                        if ''.join(['\00' for i in range(2048)]) == file_data:
-                            break
-                        else:
-                            teacher_socket.recv(2048)
+                    packets = op[op.rfind('='):]
+                    print('packets: ' + packets)
+                    for i in range(int(packets)):
+                        glass_socket.recv(2048)
+                        teacher_socket.send(2048)
                     print('finishing video-store command')
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
