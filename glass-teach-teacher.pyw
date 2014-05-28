@@ -60,6 +60,10 @@ def glass_teach_teacher():
         elif 'file-pull' == ops[0]:
             student_count = ops[1]
             print('student count: ' + student_count)
+            op = s.recv(128)
+            ops = op[:op.index('\00')].split('=')
+            chdir(LOCAL_DIR + '/' + ops[1])
+
             for i in range(int(student_count)):
                 # fetch the name of this file first
                 file_name = s.recv(128)
@@ -74,6 +78,7 @@ def glass_teach_teacher():
                 file_data = file_data[:file_data.index('\00')]
                 f.write(file_data)
                 f.close()
+            chdir(LOCAL_DIR)
 
         # store a video on the teacher computer 
         elif 'video-store' == ops[0]:

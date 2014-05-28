@@ -90,7 +90,11 @@ def glass_teach_server():
                 if 'monitor' in op:
                     print('sending monitor command')
                     for s in student_sockets:
-                        s.send(op)
+                        try:
+                            s.send(op)
+                        except:
+                            print('student socket connection failed')
+                            student_sockets.remove(s)
                 elif 'file-push' in op:
                     print('preparing file-push command')
                     # echo packet to teacher (to find and begin transfering file) and students (to begin listening for the file
@@ -101,7 +105,11 @@ def glass_teach_server():
                     file_data = teacher_socket.recv(2048)
                     while True:
                         for sock in student_sockets:
-                            sock.send(file_data)
+                            try:
+                                sock.send(file_data)
+                            except:
+                                print('student socket connection failed')
+                                student_sockets.remove(s)
                         if '\00' not in file_data:
                             file_data = teacher_socket.recv(2048)
                         else:
@@ -113,8 +121,13 @@ def glass_teach_server():
                     while len(teacher_packet) < 128:
                         teacher_packet = teacher_packet + '\00'
                     teacher_socket.send(teacher_packet)
+                    teacher_socket.send(op)
                     for student in student_sockets:
-                        student.send(op)
+                        try:
+                            student.send(op)
+                        except:
+                            print('student connection failed')
+                            student_sockets.remove(op)
                     # iterate over student sockets, echoing the file streams to the teacher socket as we recieve them 
                     for student in student_sockets:
                         # fetch and echo actual name of file before beginning stream
