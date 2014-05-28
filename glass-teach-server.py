@@ -109,7 +109,7 @@ def glass_teach_server():
                                 sock.send(file_data)
                             except:
                                 print('student socket connection failed')
-                                student_sockets.remove(s)
+                                student_sockets.remove(sock)
                         if '\00' not in file_data:
                             file_data = teacher_socket.recv(2048)
                         else:
@@ -127,7 +127,7 @@ def glass_teach_server():
                             student.send(op)
                         except:
                             print('student connection failed')
-                            student_sockets.remove(op)
+                            student_sockets.remove(student)
                     # iterate over student sockets, echoing the file streams to the teacher socket as we recieve them 
                     for student in student_sockets:
                         # fetch and echo actual name of file before beginning stream
