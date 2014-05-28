@@ -153,6 +153,8 @@ def glass_teach_server():
                     glass_socket.send(op)
                     # glass socket is java, newlines help delimit
                     glass_socket.send('\r\n')
+            elif s in student_sockets:
+                student_sockets.remove(s)
                             
 if __name__ == '__main__':
     while True:
