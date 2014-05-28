@@ -78,18 +78,19 @@ def glass_teach_teacher():
         elif 'video-store' == ops[0]:
             print('preparing video store command')
             f = open(ops[1], 'w+')
-            file_data = s.recv(2048)
-            print(file_data)
-            print('\00' in file_data)
-            write_count = 0
-            while ''.join(['\00' for i in range(2048)]) != file_data:
-                f.write(file_data)
+            file_byte_count = int(ops[2])
+            print('total bytes to write: ' + str(file_byte_count))
+            while file_byte_count > 2048:
                 file_data = s.recv(2048)
-                write_count = write_count + 1
-            file_data = file_data[:file_data.index('\00')]
+                f.write(file_data)
+                file_byte_count = file_byte_count - 2048
+            # write leftover bytes
+            print('leftover bytes: ' + str(file_byte_count))
+            file_data = s.recv(file_byte_count)
             f.write(file_data)
             f.close()
-            print('finished video store: ' + str(write_count))
+            print('finished video store command')
+            
 
 if __name__ == '__main__':
    glass_teach_teacher()

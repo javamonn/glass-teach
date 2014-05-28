@@ -135,12 +135,18 @@ def glass_teach_server():
                 elif 'video-store' in op:
                     print('preparing video-store command')
                     teacher_socket.send(op)
-                    packets = op[op.rfind('='):]
-                    print('packets: ' + packets)
-                    for i in range(int(packets)):
-                        glass_socket.recv(2048)
-                        teacher_socket.send(2048)
-                    print('finishing video-store command')
+                    file_byte_count = int(op[op.rfind('='):])
+                    print('total bytes to echo: ' + file_byte_count)
+                    while file_byte_count > 2048:
+                        op = glass_socket.recv(2048)
+                        teacher_socket.send(op)
+                        file_byte_count = file_byte_count - 2048
+                    # echo leftover bytes
+                    print('leftover bytes: ' + str(file_byte_count))
+                    op = glass_socket.recv(file_byte_count)
+                    teacher_socket.send(op)
+                    print('done echoing video store')
+
             # file dir and file-push read data from teacher socket
             elif s == teacher_socket:
                 op = s.recv(2048)
