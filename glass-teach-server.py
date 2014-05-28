@@ -63,7 +63,7 @@ def glass_teach_server():
             if s == server_socket:
                 new_socket, address = s.accept()
                 print('new connection from: ' + str(address))
-                new_socket.settimeout(.5)
+                new_socket.settimeout(None)
                 unclassified_sockets.append(new_socket)
                 connected_sockets.append(new_socket)
             elif s in unclassified_sockets:
@@ -79,6 +79,7 @@ def glass_teach_server():
                     elif socket_type == 'student':
                         print('connected student')
                         student_sockets.append(s)
+                        s.settimeout(.5)
                     elif socket_type == 'glass':
                         print('connected glass socket')
                         glass_socket = s

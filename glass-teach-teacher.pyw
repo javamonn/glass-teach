@@ -13,6 +13,7 @@ def glass_teach_teacher():
     # assume VPS is up and running at this point
     s.connect(('54.187.236.208', 8080))
     print('connected')
+    s.settimeout(None)
     # ident packet
     s.send('teacher\00\00\00')
     # loop
@@ -80,16 +81,18 @@ def glass_teach_teacher():
             f = open(ops[1], 'w+')
             file_byte_count = int(ops[2])
             print('total bytes to write: ' + str(file_byte_count))
+            packet_count = 0
             while file_byte_count > 2048:
                 file_data = s.recv(2048)
                 f.write(file_data)
                 file_byte_count = file_byte_count - 2048
+                packet_count = packet_count + 1
             # write leftover bytes
             print('leftover bytes: ' + str(file_byte_count))
             file_data = s.recv(file_byte_count)
             f.write(file_data)
             f.close()
-            print('finished video store command')
+            print('finished video store command ' + str(packet_count))
             
 
 if __name__ == '__main__':
