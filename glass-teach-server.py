@@ -147,6 +147,22 @@ def glass_teach_server():
                 op = s.recv(2048)
                 if 'file-dir' in op:
                     print('begin echoing file-dir back to glass')
+
+                    # send a ping to see which student sockets are still connected 
+                    for sock in student_sockets:
+                        ping = 'ping=ping'
+                        while len(ping) < 128:
+                            ping = ping + '\00'
+                        try:
+                            sock.send(ping)
+                            res = sock.recv(128)
+                            if 'ping' in res:
+                                continue
+                            else:
+                                student_sockets.remove(sock)
+                        except:
+                            student_sockets.remove(sock)
+
                     # send back the number of student sockets connected
                     glass_socket.send(str(len(student_sockets)) + '\01')
                     # start echoing data back to glass, send until we see a '\00'

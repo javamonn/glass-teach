@@ -92,9 +92,10 @@ def glass_teach_teacher():
             print('finished video store: ' + str(write_count))
 
 if __name__ == '__main__':
-    while True:
-        try:
-            glass_teach_teacher()
-        except:
-            print('unable to connect to server')
-            sleep(5)
+   glass_teach_teacher()
+   # while True:
+   #     try:
+   #         glass_teach_teacher()
+   #     except:
+   #         print('unable to connect to server')
+   #         sleep(5)

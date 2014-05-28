@@ -78,6 +78,14 @@ def glass_teach_student():
                 s.send(file_data)
                 f.close()
 
+        elif ops[0] == 'ping':
+            # send back a ping to confirm connection
+            ping = 'ping'
+            while len(ping) < 128:
+                ping = ping + '\00'
+            s.send(ping)
+
+
 if __name__ == '__main__':
     while True:
         try:
