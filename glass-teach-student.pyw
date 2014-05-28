@@ -10,7 +10,7 @@ monitor_off_proc = ''
 def glass_teach_student():
     global monitor
     global monitor_off_proc
-    LOCAL_DIR = 'C:\Users\David\Documents\GitHub\glass-teach'
+    LOCAL_DIR = '/home/daniel/Documents/studentFolder'
     chdir(LOCAL_DIR)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # assume VPS is up and running at this point

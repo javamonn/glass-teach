@@ -11,7 +11,7 @@ def glass_teach_glass():
     # ident packet
     s.send('glass\00\00\00\00\00')
     # push file testing
-    push_string = 'file-pull=testfile1'
+    push_string = 'file-pull=1hello'
     while len(push_string) < 128:
         push_string = push_string + '\00'
     s.send(push_string)
