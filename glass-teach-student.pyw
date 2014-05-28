@@ -32,7 +32,7 @@ def glass_teach_student():
             elif ops[1] == 'on':
                 print('monitor on')
                 monitor_off_proc.terminate()
-                monitro = True
+                monitor = True
 
         # recieve a file from the teacher computer (get assignment)
         elif ops[0] == 'file-push':
