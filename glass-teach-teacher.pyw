@@ -67,9 +67,11 @@ def glass_teach_teacher():
             for i in range(int(student_count)):
                 # fetch the name of this file first
                 file_name = s.recv(128)
-                file_name = file_name[(file_name.index('=') + 1):file_name.index('\00')]
-                print('file_name: ' + file_name)
-                f = open(file_name, 'w+')
+                print('packet recv: ' + file_name)
+                print('packet len: ' + str(len(file_name)))
+                name = file_name[(file_name.index('=') + 1):file_name.index('\00')]
+                print('file_name: ' + name)
+                f = open(name, 'w+')
                 # fetch data 
                 file_data = s.recv(2048)
                 while '\00' not in file_data:
@@ -79,7 +81,7 @@ def glass_teach_teacher():
                 f.write(file_data)
                 f.close()
             chdir(LOCAL_DIR)
-
+            print('finished file pull')
         # store a video on the teacher computer 
         elif 'video-store' == ops[0]:
             print('preparing video store command')

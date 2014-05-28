@@ -64,9 +64,11 @@ def glass_teach_student():
                 file_name_return = file_name_return + 'none'
             while len(file_name_return) < 128:
                 file_name_return = file_name_return + '\00'
+            print('packet returned: ' + file_name_return)
             s.send(file_name_return)
             # begin streaming file back in len 2048 packets
             if len(file_name) > 0:
+                print('opening: ' + file_name)
                 f = open(file_name)
                 file_data = f.read(2048)
                 while len(file_data) == 2048:
@@ -77,6 +79,7 @@ def glass_teach_student():
                     file_data = file_data + '\00'
                 s.send(file_data)
                 f.close()
+                print('finished streaming file')
 
         elif ops[0] == 'ping':
             # send back a ping to confirm connection
