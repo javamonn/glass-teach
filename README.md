@@ -1,6 +1,6 @@
 #glass-teach
 
-glass-teach provides a system that allows a teacher (using google glass) to leverage greater control over a lab of computers.
+glass-teach provides a system that allows a teacher (using google glass) to leverage greater control over a lab of computers. glass-teach is an android application intended to be run on google glass.
 
 ##Commands
 Right now, four commands are implemented and are working:
